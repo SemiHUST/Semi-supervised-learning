@@ -23,7 +23,7 @@ class EvaluationHook(Hook):
                 algorithm.best_it = algorithm.it
             if algorithm.log_dict['eval/F1'] > algorithm.best_eval_F1:
                 algorithm.best_eval_F1 = algorithm.log_dict['eval/F1']
-                algorithm.best_it_F1 = algorithm.it
+                algorithm.best_it = algorithm.it
             print('DEBUG: ', algorithm.log_dict)
     def after_run(self, algorithm):
         
