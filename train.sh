@@ -1,1 +1,0 @@
-python3 train.py --c config/usb_cv/sequencematch/demo_sequence_motor.yaml
