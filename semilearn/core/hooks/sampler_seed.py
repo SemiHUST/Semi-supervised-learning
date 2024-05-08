@@ -9,11 +9,10 @@ from semilearn.datasets import DistributedSampler
 class DistSamplerSeedHook(Hook):
     """
     Distributed sampler seed Hook
-xemay
+
     update the samples' epoch in data loader
     """
     def before_train_epoch(self, algorithm):
-        print(algorithm)
         for name, dataloader in algorithm.loader_dict.items():
             if not isinstance(dataloader, DataLoader):
                 continue
