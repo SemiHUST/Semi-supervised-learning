@@ -20,8 +20,9 @@ class LoggingHook(Hook):
                     else:
                         print_text += " "
 
-                print_text += "BEST_EVAL_ACC: {:.4f}, at {:d} iters".format(algorithm.best_eval_acc, algorithm.best_it + 1)
+                print_text += "\nBEST_EVAL_ACC: {:.4f}, at {:d} iters".format(algorithm.best_eval_acc, algorithm.best_it + 1)
                 # algorithm.print_fn(f"{algorithm.it + 1} iteration, USE_EMA: {algorithm.ema_m != 0}, {algorithm.log_dict}, BEST_EVAL_ACC: {algorithm.best_eval_acc}, at {algorithm.best_it + 1} iters")
+                print_text += "\nBEST_EVAL_F1: {:.4f}, at {:d} iters".format(algorithm.best_eval_F1, algorithm.best_it_F1 + 1)
                 algorithm.print_fn(print_text)
             
             if not algorithm.tb_log is None:
