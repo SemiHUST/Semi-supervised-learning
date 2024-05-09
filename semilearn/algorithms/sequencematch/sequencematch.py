@@ -72,14 +72,19 @@ class SequenceMatch(AlgorithmBase):
                 outs_x_lb = self.model(x_lb) 
                 logits_x_lb = outs_x_lb['logits']
                 feats_x_lb = outs_x_lb['feat']
-                outs_x_lb_w = self.model(x_ulb_w)
-                feats_x_lb_w = outs_x_lb_w['feat']
+
+                outs_x_ulb_w = self.model(x_ulb_w) 
+                logits_x_ulb_w = outs_x_ulb_w['logits']
+                feats_x_ulb_w = outs_x_ulb_w['feat']
+                
                 outs_x_ulb_m = self.model(x_ulb_m)
                 logits_x_ulb_m = outs_x_ulb_m['logits']
                 feats_x_ulb_m = outs_x_ulb_m['feat']
+                
                 outs_x_ulb_s = self.model(x_ulb_s)
                 logits_x_ulb_s = outs_x_ulb_s['logits']
                 feats_x_ulb_s = outs_x_ulb_s['feat']
+                
                 with torch.no_grad():
                     outs_x_ulb_w = self.model(x_ulb_w)
                     logits_x_ulb_w = outs_x_ulb_w['logits']
