@@ -60,8 +60,8 @@ def get_motor(args, alg, name, num_labels, num_classes, data_dir = './data', inc
         lb_data.extend(imagepaths)
         lb_targets.extend(targets)
     test_data, test_targets = [], []
-    for label in os.listdir(os.path.join(data_dir, 'test')):
-        path = os.path.join(data_dir, 'test', label)
+    for label in os.listdir(os.path.join(data_dir, 'val')):
+        path = os.path.join(data_dir, 'val', label)
         imagenames = os.listdir(path)
         imagepaths = [os.path.join(path, imagename) for imagename in imagenames]
         targets = [int(label)]*len(os.listdir(path))    
