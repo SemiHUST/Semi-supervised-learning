@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=1 python3 train.py --c config/usb_cv/sequencematch/sequencematch_motor_demo.yaml
