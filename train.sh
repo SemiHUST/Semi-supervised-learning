@@ -1,0 +1,1 @@
+CUDA_VISIBLE_DEVICES=0 python3 train.py --c config/usb_cv/freesequencematch/freesequence_u4_AdamW_motor30_1101.yaml
