@@ -21,7 +21,9 @@ class EvaluationHook(Hook):
             if algorithm.log_dict['eval/top-1-acc'] > algorithm.best_eval_acc:
                 algorithm.best_eval_acc = algorithm.log_dict['eval/top-1-acc']
                 algorithm.best_it = algorithm.it
-    
+            if algorithm.log_dict['eval/F1'] > algorithm.best_eval_F1:
+                algorithm.best_eval_F1 = algorithm.log_dict['eval/F1']
+                algorithm.best_it_F1 = algorithm.it
     def after_run(self, algorithm):
         
         if not algorithm.args.multiprocessing_distributed or (algorithm.args.multiprocessing_distributed and algorithm.args.rank % algorithm.ngpus_per_node == 0):
