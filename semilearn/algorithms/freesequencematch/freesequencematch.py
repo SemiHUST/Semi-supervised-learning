@@ -32,7 +32,7 @@ def entropy_loss(mask, logits_s, prob_model, label_hist):
     hist_s = torch.bincount(pred_label_s, minlength=logits_s.shape[1]).to(logits_s.dtype)
     hist_s = hist_s / hist_s.sum()
 
-    # modulate prob model 
+    # modulate prob model
     prob_model = prob_model.reshape(1, -1)
     label_hist = label_hist.reshape(1, -1)
     # prob_model_scaler = torch.nan_to_num(1 / label_hist, nan=0.0, posinf=0.0, neginf=0.0).detach()
@@ -79,12 +79,12 @@ class FreeSequenceMatch(AlgorithmBase):
 
         """
     def __init__(self, args, net_builder, tb_log=None, logger=None):
-        super().__init__(args, net_builder, tb_log, logger) 
+        super().__init__(args, net_builder, tb_log, logger)
         # flexmatch specificed arguments
         self.init(T=args.T, p_cutoff=args.p_cutoff, hard_label=args.hard_label, thresh_warmup=args.thresh_warmup,
             ema_p=args.ema_p, use_quantile=args.use_quantile, clip_thresh=args.clip_thresh)
         self.lambda_e = args.ent_loss_ratio
-    
+
     def init(self, T, p_cutoff, hard_label=True, thresh_warmup=True, ema_p=0.999, use_quantile=True, clip_thresh=False):
         # sequencematch
         self.T = T
@@ -118,13 +118,13 @@ class FreeSequenceMatch(AlgorithmBase):
                 logits_x_ulb_w, logits_x_ulb_m, logits_x_ulb_s = outputs['logits'][num_lb:].chunk(3)
                 feats_x_ulb_w, feats_x_ulb_m, feats_x_ulb_s = outputs['feat'][num_lb:].chunk(3)
             else:
-                outs_x_lb = self.model(x_lb) 
+                outs_x_lb = self.model(x_lb)
                 logits_x_lb = outs_x_lb['logits']
                 feats_x_lb = outs_x_lb['feat']
 
-                outs_x_lb_w = self.model(x_ulb_w)
-                logits_x_ulb_w = outs_x_lb_w['logits']
-                feats_x_lb_w = outs_x_lb_w['feat']
+                outs_x_ulb_w = self.model(x_ulb_w)
+                logits_x_ulb_w = outs_x_ulb_w['logits']
+                feats_x_ulb_w = outs_x_ulb_w['feat']
 
                 outs_x_ulb_m = self.model(x_ulb_m)
                 logits_x_ulb_m = outs_x_ulb_m['logits']
@@ -143,7 +143,7 @@ class FreeSequenceMatch(AlgorithmBase):
             probs_x_ulb_w = self.compute_prob(logits_x_ulb_w.detach())
             probs_x_ulb_m = self.compute_prob(logits_x_ulb_m.detach())
 
-            # if distribution alignment hook is registered, call it 
+            # if distribution alignment hook is registered, call it
             # this is implemented for imbalanced algorithm - CReST
             if self.registered_hook("DistAlignHook"):
                 probs_x_ulb_w = self.call_hook("dist_align", "DistAlignHook", probs_x_ulb=probs_x_ulb_w.detach())
@@ -151,10 +151,10 @@ class FreeSequenceMatch(AlgorithmBase):
 
             # compute mask
             mask = self.call_hook("masking", "MaskingHook", logits_x_ulb=probs_x_ulb_w, softmax_x_ulb=False, idx_ulb=idx_ulb)
-        
-            
+
+
             # generate unlabeled targets using pseudo label hook
-            pseudo_label = self.call_hook("gen_ulb_targets", "PseudoLabelingHook", 
+            pseudo_label = self.call_hook("gen_ulb_targets", "PseudoLabelingHook",
                                             logits=probs_x_ulb_w,
                                             use_hard_label=self.use_hard_label,
                                             T=self.T,
@@ -169,12 +169,12 @@ class FreeSequenceMatch(AlgorithmBase):
                                     F.softmax(probs_x_ulb_w / self.T, dim=-1).detach(),
                                     reduction='none').sum(dim=1, keepdim=False)
             unsup_loss_mw = (unsup_loss_mw * mask).mean()
-            
+
             unsup_loss_sm = F.kl_div(F.softmax(logits_x_ulb_s, dim=-1).log(),
                                     F.softmax(probs_x_ulb_m / self.T, dim=-1).detach(),
                                     reduction='none').sum(dim=1, keepdim=False)
             unsup_loss_sm = (unsup_loss_sm * mask).mean()
-            
+
             unsup_loss_sw = F.kl_div(F.softmax(logits_x_ulb_s, dim=-1).log(),
                                     F.softmax(probs_x_ulb_w / self.T, dim=-1).detach(),
                                     reduction='none').sum(dim=1, keepdim=False)
@@ -187,12 +187,12 @@ class FreeSequenceMatch(AlgorithmBase):
             total_loss = sup_loss + self.lambda_u * (unsup_loss + unsup_loss_mw + unsup_loss_sm + unsup_loss_sw) + self.lambda_e * ent_loss
 
         out_dict = self.process_out_dict(loss=total_loss, feat=feat_dict)
-        log_dict = self.process_log_dict(sup_loss=sup_loss.item(), 
-                                        unsup_loss=unsup_loss.item(), 
-                                        total_loss=total_loss.item(), 
+        log_dict = self.process_log_dict(sup_loss=sup_loss.item(),
+                                        unsup_loss=unsup_loss.item(),
+                                        total_loss=total_loss.item(),
                                         util_ratio=mask.float().mean().item())
         return out_dict, log_dict
-        
+
 
     def get_save_dict(self):
         save_dict = super().get_save_dict()
